@@ -1,0 +1,6 @@
+{
+  "version": "1.0.0",
+  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.0.0/ETaxLoginAssistant.exe",
+  "sha256": "04e3366ce48e737b533275615c16c64046d6a2643b3d3e29cae570dc40772c78",
+  "notes": "首个公开安装版本，支持本机加密保存和 GitHub 自动更新。"
+}

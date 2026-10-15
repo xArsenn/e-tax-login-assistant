@@ -1,0 +1,6 @@
+build/
+dist/
+installer-dist/
+release-assets/
+*.spec
+__pycache__/
