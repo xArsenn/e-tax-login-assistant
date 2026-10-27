@@ -1,6 +1,6 @@
 {
-  "version": "1.4.0",
-  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.4.0/ETaxLoginAssistant.exe",
-  "sha256": "9f694ff8e27baa2b02d58c1296e62e1980409653faabf06cf06f51a17ed4297b",
-  "notes": "移除底部冗余说明；状态提示自动隐藏；自动点击期间保护并恢复用户鼠标位置。"
+  "version": "2.0.0",
+  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v2.0.0/ETaxLoginAssistant.exe",
+  "sha256": "ab4868df0003021cc14248b531d4c4905689bf6ae1e1b647b0570e70e5442786",
+  "notes": "升级为纯本地企业税务工作台：办税任务看板、登录保护、环境体检、资料归档、身份档案、本地保险箱、自动加密快照、密码健康、审计记录、批量维护和本地报表。"
 }
