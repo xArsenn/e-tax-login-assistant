@@ -19,7 +19,7 @@ from tkinter import messagebox, simpledialog, ttk
 from urllib.parse import urlparse
 
 APP_NAME = "电子税务局企业登录助手"
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 UPDATE_MANIFEST_URL = "https://raw.githubusercontent.com/xArsenn/e-tax-login-assistant/main/latest.json"
 REGIONS = {
     "深圳": {
@@ -986,43 +986,59 @@ def main():
     config = load_config()
     root = tk.Tk()
     root.title(APP_NAME)
-    root.geometry("1200x720")
-    root.minsize(1000, 650)
+    root.geometry("1240x820")
+    root.minsize(1040, 720)
     root.resizable(True, True)
-    root.configure(bg="#F4F1E8")
+    root.configure(bg="#0B1426")
 
     style = ttk.Style(root)
     try:
         style.theme_use("clam")
     except tk.TclError:
         pass
-    card = "#F4F1E8"
-    ink = "#173E3A"
-    muted = "#65756D"
+    navy = "#0B1426"
+    navy_soft = "#13233D"
+    gold = "#C9A45C"
+    gold_hover = "#D9B76F"
+    card = "#F7F5F0"
+    ink = "#15233A"
+    muted = "#6C7583"
     style.configure("TFrame", background=card)
-    style.configure("Title.TLabel", background=card, font=("STKaiti", 23, "bold"), foreground=ink)
+    style.configure("Header.TFrame", background=navy)
+    style.configure("Brand.TLabel", background=navy, font=("Microsoft YaHei UI", 22, "bold"), foreground="#FFFFFF")
+    style.configure("HeaderHint.TLabel", background=navy, font=("Microsoft YaHei UI", 10), foreground="#AAB6C9")
+    style.configure("Badge.TLabel", background=navy_soft, font=("Microsoft YaHei UI", 9, "bold"), foreground="#E6CA91", padding=(12, 6))
     style.configure("Hint.TLabel", background=card, font=("Microsoft YaHei UI", 10), foreground=muted)
-    style.configure("Field.TLabel", background=card, font=("Microsoft YaHei UI", 10, "bold"), foreground="#294C47")
-    style.configure("CurrentCompany.TLabel", background=card, font=("Microsoft YaHei UI", 12, "bold"), foreground="#1F6A5D")
-    style.configure("Company.TCombobox", fieldbackground="#E3EEE7", foreground="#123E37", padding=8)
-    style.configure("TEntry", fieldbackground="#FCFBF5", foreground="#183B37", padding=4)
-    style.configure("TCombobox", fieldbackground="#FCFBF5", foreground="#183B37", padding=4)
-    style.configure("TSeparator", background="#B8C9BE")
-    style.configure("Secondary.TButton", font=("Microsoft YaHei UI", 10), padding=(8, 7), background="#DCE8DE", foreground="#244C43")
-    style.map("Secondary.TButton", background=[("active", "#C6DACB")], foreground=[("active", "#173E3A")])
-    style.configure("Danger.TButton", font=("Microsoft YaHei UI", 10), padding=(8, 7), background="#EFE0D7", foreground="#7A4038")
-    style.map("Danger.TButton", background=[("active", "#E4C9BC")], foreground=[("active", "#6B302B")])
-    style.configure("Primary.TButton", font=("Microsoft YaHei UI", 11, "bold"), padding=(12, 10), background="#2F7468", foreground="#FFFFFF")
-    style.map("Primary.TButton", background=[("active", "#245F56"), ("pressed", "#1D5048")], foreground=[("active", "#FFFFFF")])
+    style.configure("Status.TLabel", background="#EEEAE1", font=("Microsoft YaHei UI", 10), foreground="#4F5B6D", padding=(12, 8))
+    style.configure("Field.TLabel", background=card, font=("Microsoft YaHei UI", 10, "bold"), foreground="#34445D")
+    style.configure("CurrentCompany.TLabel", background=card, font=("Microsoft YaHei UI", 11, "bold"), foreground="#9A7432")
+    style.configure("Company.TCombobox", fieldbackground="#FFFDF8", foreground=ink, bordercolor="#C9A45C", lightcolor="#C9A45C", darkcolor="#C9A45C", padding=9)
+    style.map("Company.TCombobox", fieldbackground=[("readonly", "#FFFDF8")], foreground=[("readonly", ink)])
+    style.configure("TEntry", fieldbackground="#FFFFFF", foreground=ink, bordercolor="#D4D8DE", lightcolor="#D4D8DE", darkcolor="#D4D8DE", padding=5)
+    style.map("TEntry", bordercolor=[("focus", gold)], lightcolor=[("focus", gold)], darkcolor=[("focus", gold)])
+    style.configure("TCombobox", fieldbackground="#FFFFFF", foreground=ink, bordercolor="#D4D8DE", lightcolor="#D4D8DE", darkcolor="#D4D8DE", padding=5)
+    style.map("TCombobox", fieldbackground=[("readonly", "#FFFFFF")], foreground=[("readonly", ink)])
+    style.configure("TSeparator", background="#D9D4C9")
+    style.configure("Secondary.TButton", font=("Microsoft YaHei UI", 10), padding=(9, 8), background="#E9EDF2", foreground="#263750", bordercolor="#CAD1DA")
+    style.map("Secondary.TButton", background=[("active", "#DCE3EB")], foreground=[("active", navy)])
+    style.configure("Danger.TButton", font=("Microsoft YaHei UI", 10), padding=(9, 8), background="#F3E7E5", foreground="#8A3F3A", bordercolor="#E3C7C3")
+    style.map("Danger.TButton", background=[("active", "#EAD6D2")], foreground=[("active", "#74312D")])
+    style.configure("Primary.TButton", font=("Microsoft YaHei UI", 11, "bold"), padding=(14, 11), background=gold, foreground=navy, bordercolor=gold)
+    style.map("Primary.TButton", background=[("active", gold_hover), ("pressed", "#B58E45")], foreground=[("active", navy), ("pressed", navy)])
 
-    shell = tk.Frame(root, bg=card, highlightthickness=0)
+    shell = tk.Frame(root, bg=navy, highlightthickness=0)
     shell.pack(fill="both", expand=True)
-    frame = ttk.Frame(shell, padding=(54, 34))
-    frame.pack(fill="both", expand=True)
-    header = ttk.Frame(frame)
+    header = ttk.Frame(shell, style="Header.TFrame", padding=(54, 22))
     header.pack(fill="x")
-    ttk.Label(header, text="云境 · 电子税务登录", style="Title.TLabel").pack(side="left", anchor="w")
-    ttk.Label(frame, text="企业业务助手  |  登录资料仅保存在本机", style="Hint.TLabel").pack(anchor="w", pady=(4, 14))
+    brand = ttk.Frame(header, style="Header.TFrame")
+    brand.pack(side="left")
+    ttk.Label(brand, text="云境 · 企业税务工作台", style="Brand.TLabel").pack(anchor="w")
+    ttk.Label(brand, text="SECURE ENTERPRISE TAX WORKSPACE", style="HeaderHint.TLabel").pack(anchor="w", pady=(3, 0))
+    ttk.Label(header, text=f"PRO  ·  v{APP_VERSION}", style="Badge.TLabel").pack(side="right", anchor="e")
+
+    frame = ttk.Frame(shell, padding=(54, 28))
+    frame.pack(fill="both", expand=True)
+    ttk.Label(frame, text="企业身份与登录资料管理  ·  敏感信息仅在本机加密保存", style="Hint.TLabel").pack(anchor="w", pady=(0, 10))
 
     fields = ttk.Frame(frame)
     fields.pack(fill="both", expand=True, pady=(8, 0))
@@ -1041,13 +1057,13 @@ def main():
     search_popup.withdraw()
     search_popup.overrideredirect(True)
     search_popup.transient(root)
-    search_popup.configure(bg="#AFC3B7")
+    search_popup.configure(bg="#C9A45C")
     result_list = tk.Listbox(
         search_popup,
         font=("Microsoft YaHei UI", 10),
-        bg="#FCFBF5",
-        fg="#183B37",
-        selectbackground="#2F7468",
+        bg="#FFFFFF",
+        fg=ink,
+        selectbackground=navy_soft,
         selectforeground="#FFFFFF",
         borderwidth=1,
         relief="solid",
@@ -1317,7 +1333,7 @@ def main():
     actions.pack(fill="x")
     ttk.Button(actions, text="保存公司资料", command=save_profile, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=(0, 6))
     ttk.Button(actions, text="打开官网并自动填写", command=launch, style="Primary.TButton").pack(side="left", fill="x", expand=True, padx=(6, 0))
-    ttk.Label(frame, textvariable=status_var, style="Hint.TLabel").pack(anchor="w", pady=(13, 0))
+    ttk.Label(frame, textvariable=status_var, style="Status.TLabel").pack(fill="x", anchor="w", pady=(13, 0))
     ttk.Separator(frame).pack(fill="x", pady=(12, 8))
     ttk.Label(frame, text="使用日常浏览器打开、自动点击首页登录并填写三项资料；提交与验证由本人完成。", style="Hint.TLabel").pack(anchor="w")
     root.after(
