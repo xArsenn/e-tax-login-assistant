@@ -1,5 +1,5 @@
 #define MyAppName "电子税务局企业登录助手"
-#define MyAppVersion "1.2.0"
+#define MyAppVersion "1.3.0"
 #define MyAppExeName "电子税务局企业登录助手.exe"
 
 [Setup]

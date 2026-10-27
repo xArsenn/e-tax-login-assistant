@@ -1,6 +1,6 @@
 {
-  "version": "1.2.0",
-  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.2.0/ETaxLoginAssistant.exe",
-  "sha256": "feeaa472c84f5503dd7d112a89051c0ddee014d8576c5860036708d86630c8f7",
-  "notes": "重新优化操作按钮布局；连续打开不同税务局时复用同一浏览器窗口并新建标签页。"
+  "version": "1.3.0",
+  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.3.0/ETaxLoginAssistant.exe",
+  "sha256": "0fcb3896b78c2dbd494a6ae66b3d6fe7bc885559b87a38a9c8a9b55994e84951",
+  "notes": "顶部新增手动检查更新按钮，可明确显示最新版、网络异常或可用更新状态。"
 }

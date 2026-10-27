@@ -19,7 +19,7 @@ from tkinter import messagebox, simpledialog, ttk
 from urllib.parse import urlparse
 
 APP_NAME = "电子税务局企业登录助手"
-APP_VERSION = "1.2.0"
+APP_VERSION = "1.3.0"
 UPDATE_MANIFEST_URL = "https://raw.githubusercontent.com/xArsenn/e-tax-login-assistant/main/latest.json"
 REGIONS = {
     "深圳": {
@@ -117,8 +117,10 @@ def download_update(manifest, root, status):
         status(f"自动更新失败：{exc}")
 
 
-def check_for_updates(root, status):
+def check_for_updates(root, status, manual=False):
     if not getattr(sys, "frozen", False):
+        if manual:
+            status(f"当前为开发运行版 v{APP_VERSION}；安装版用户可使用在线更新。")
         return
     try:
         request = urllib.request.Request(
@@ -128,6 +130,8 @@ def check_for_updates(root, status):
         with urllib.request.urlopen(request, timeout=10) as response:
             manifest = json.loads(response.read().decode("utf-8"))
         if version_tuple(manifest.get("version", "0")) <= version_tuple(APP_VERSION):
+            if manual:
+                status(f"当前已是最新版本 v{APP_VERSION}。")
             return
 
         def ask_update():
@@ -142,8 +146,10 @@ def check_for_updates(root, status):
                 ).start()
 
         root.after(0, ask_update)
-    except Exception:
-        # 网络不可用时静默跳过，不影响正常登录。
+    except Exception as exc:
+        if manual:
+            status(f"检查更新失败：{exc}")
+        # 自动检查失败时静默跳过，不影响正常登录。
         return
 
 
@@ -1008,6 +1014,8 @@ def main():
     style.configure("Brand.TLabel", background=navy, font=("Microsoft YaHei UI", 22, "bold"), foreground="#FFFFFF")
     style.configure("HeaderHint.TLabel", background=navy, font=("Microsoft YaHei UI", 10), foreground="#AAB6C9")
     style.configure("Badge.TLabel", background=navy_soft, font=("Microsoft YaHei UI", 9, "bold"), foreground="#E6CA91", padding=(12, 6))
+    style.configure("Header.TButton", background=navy_soft, foreground="#E7ECF4", bordercolor="#263A58", font=("Microsoft YaHei UI", 9), padding=(11, 6))
+    style.map("Header.TButton", background=[("active", "#1D3150"), ("pressed", "#263A58")], foreground=[("active", "#FFFFFF")])
     style.configure("Hint.TLabel", background=card, font=("Microsoft YaHei UI", 10), foreground=muted)
     style.configure("Status.TLabel", background="#EEEAE1", font=("Microsoft YaHei UI", 10), foreground="#4F5B6D", padding=(12, 8))
     style.configure("ActionHint.TLabel", background=card, font=("Microsoft YaHei UI", 9, "bold"), foreground="#7B6742")
@@ -1036,6 +1044,8 @@ def main():
     ttk.Label(brand, text="云境 · 企业税务工作台", style="Brand.TLabel").pack(anchor="w")
     ttk.Label(brand, text="SECURE ENTERPRISE TAX WORKSPACE", style="HeaderHint.TLabel").pack(anchor="w", pady=(3, 0))
     ttk.Label(header, text=f"PRO  ·  v{APP_VERSION}", style="Badge.TLabel").pack(side="right", anchor="e")
+    update_button = ttk.Button(header, text="检查更新", style="Header.TButton")
+    update_button.pack(side="right", padx=(0, 10))
 
     frame = ttk.Frame(shell, padding=(54, 28))
     frame.pack(fill="both", expand=True)
@@ -1302,6 +1312,12 @@ def main():
     status_var = tk.StringVar(value="就绪")
     def status(text):
         root.after(0, status_var.set, text)
+
+    update_button.configure(
+        command=lambda: threading.Thread(
+            target=check_for_updates, args=(root, status, True), daemon=True
+        ).start()
+    )
 
     def launch():
         company, region = company_var.get(), region_var.get()
