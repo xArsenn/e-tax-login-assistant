@@ -19,7 +19,7 @@ from tkinter import messagebox, simpledialog, ttk
 from urllib.parse import urlparse
 
 APP_NAME = "电子税务局企业登录助手"
-APP_VERSION = "1.3.0"
+APP_VERSION = "1.4.0"
 UPDATE_MANIFEST_URL = "https://raw.githubusercontent.com/xArsenn/e-tax-login-assistant/main/latest.json"
 REGIONS = {
     "深圳": {
@@ -120,7 +120,7 @@ def download_update(manifest, root, status):
 def check_for_updates(root, status, manual=False):
     if not getattr(sys, "frozen", False):
         if manual:
-            status(f"当前为开发运行版 v{APP_VERSION}；安装版用户可使用在线更新。")
+            status(f"当前已是最新版本 v{APP_VERSION}。")
         return
     try:
         request = urllib.request.Request(
@@ -679,9 +679,19 @@ def native_browser_windows(title_hint):
 
 
 def native_mouse_click(x, y):
-    ctypes.windll.user32.SetCursorPos(int(x), int(y))
-    ctypes.windll.user32.mouse_event(0x0002, 0, 0, 0, 0)
-    ctypes.windll.user32.mouse_event(0x0004, 0, 0, 0, 0)
+    """在固定坐标完成点击并恢复用户鼠标，避免移动鼠标干扰自动操作。"""
+    user32 = ctypes.windll.user32
+    original = ctypes.wintypes.POINT()
+    user32.GetCursorPos(ctypes.byref(original))
+    blocked = bool(user32.BlockInput(True))
+    try:
+        user32.SetCursorPos(int(x), int(y))
+        user32.mouse_event(0x0002, 0, 0, 0, 0)
+        user32.mouse_event(0x0004, 0, 0, 0, 0)
+        user32.SetCursorPos(original.x, original.y)
+    finally:
+        if blocked:
+            user32.BlockInput(False)
 
 
 def native_ctrl_a():
@@ -1309,9 +1319,25 @@ def main():
     ttk.Button(company_actions, text="修改名称", command=rename_company, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=4)
     ttk.Button(company_actions, text="删除公司", command=delete_company, style="Danger.TButton").pack(side="left", fill="x", expand=True, padx=(4, 0))
 
-    status_var = tk.StringVar(value="就绪")
+    status_var = tk.StringVar(value="")
+    status_clear_job = {"id": None}
     def status(text):
-        root.after(0, status_var.set, text)
+        def apply_status():
+            if status_clear_job["id"] is not None:
+                root.after_cancel(status_clear_job["id"])
+            status_var.set(text)
+            if text:
+                if not status_label.winfo_manager():
+                    status_label.pack(fill="x", anchor="w", pady=(13, 0))
+                def clear_status():
+                    status_var.set("")
+                    status_label.pack_forget()
+                    status_clear_job["id"] = None
+                status_clear_job["id"] = root.after(6000, clear_status)
+            else:
+                status_label.pack_forget()
+                status_clear_job["id"] = None
+        root.after(0, apply_status)
 
     update_button.configure(
         command=lambda: threading.Thread(
@@ -1354,9 +1380,7 @@ def main():
     ttk.Label(actions, text="税务登录", style="ActionHint.TLabel").grid(row=0, column=1, sticky="w", padx=(8, 0), pady=(0, 5))
     ttk.Button(actions, text="保存当前公司资料", command=save_profile, style="Secondary.TButton").grid(row=1, column=0, sticky="ew", padx=(0, 8), ipady=2)
     ttk.Button(actions, text="打开税务局并自动填写", command=launch, style="Primary.TButton").grid(row=1, column=1, sticky="ew", padx=(8, 0), ipady=2)
-    ttk.Label(frame, textvariable=status_var, style="Status.TLabel").pack(fill="x", anchor="w", pady=(13, 0))
-    ttk.Separator(frame).pack(fill="x", pady=(12, 8))
-    ttk.Label(frame, text="使用日常浏览器打开、自动点击首页登录并填写三项资料；提交与验证由本人完成。", style="Hint.TLabel").pack(anchor="w")
+    status_label = ttk.Label(frame, textvariable=status_var, style="Status.TLabel")
     root.after(
         1500,
         lambda: threading.Thread(target=check_for_updates, args=(root, status), daemon=True).start(),
