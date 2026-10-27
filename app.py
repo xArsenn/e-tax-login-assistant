@@ -19,7 +19,7 @@ from tkinter import messagebox, simpledialog, ttk
 from urllib.parse import urlparse
 
 APP_NAME = "电子税务局企业登录助手"
-APP_VERSION = "1.1.0"
+APP_VERSION = "1.2.0"
 UPDATE_MANIFEST_URL = "https://raw.githubusercontent.com/xArsenn/e-tax-login-assistant/main/latest.json"
 REGIONS = {
     "深圳": {
@@ -963,7 +963,7 @@ def start_browser(company, region, tax_id, user_id, password, status):
         # 默认用户资料、实名环境和税务组件，与用户平时手工打开完全一致。
         subprocess.Popen([
             executable,
-            "--new-window",
+            "--new-tab",
             "--start-maximized",
             "--force-renderer-accessibility",
             settings["portal"],
@@ -1010,6 +1010,7 @@ def main():
     style.configure("Badge.TLabel", background=navy_soft, font=("Microsoft YaHei UI", 9, "bold"), foreground="#E6CA91", padding=(12, 6))
     style.configure("Hint.TLabel", background=card, font=("Microsoft YaHei UI", 10), foreground=muted)
     style.configure("Status.TLabel", background="#EEEAE1", font=("Microsoft YaHei UI", 10), foreground="#4F5B6D", padding=(12, 8))
+    style.configure("ActionHint.TLabel", background=card, font=("Microsoft YaHei UI", 9, "bold"), foreground="#7B6742")
     style.configure("Field.TLabel", background=card, font=("Microsoft YaHei UI", 10, "bold"), foreground="#34445D")
     style.configure("CurrentCompany.TLabel", background=card, font=("Microsoft YaHei UI", 11, "bold"), foreground="#9A7432")
     style.configure("Company.TCombobox", fieldbackground="#FFFDF8", foreground=ink, bordercolor="#C9A45C", lightcolor="#C9A45C", darkcolor="#C9A45C", padding=9)
@@ -1295,7 +1296,7 @@ def main():
     company_actions = ttk.Frame(fields)
     company_actions.grid(row=3, column=1, sticky="ew", padx=(14, 0), pady=(5, 14))
     ttk.Button(company_actions, text="新增公司", command=add_company, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=(0, 4))
-    ttk.Button(company_actions, text="重命名", command=rename_company, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=4)
+    ttk.Button(company_actions, text="修改名称", command=rename_company, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=4)
     ttk.Button(company_actions, text="删除公司", command=delete_company, style="Danger.TButton").pack(side="left", fill="x", expand=True, padx=(4, 0))
 
     status_var = tk.StringVar(value="就绪")
@@ -1330,9 +1331,13 @@ def main():
             status(f"保存失败：{exc}")
 
     actions = ttk.Frame(frame)
-    actions.pack(fill="x")
-    ttk.Button(actions, text="保存公司资料", command=save_profile, style="Secondary.TButton").pack(side="left", fill="x", expand=True, padx=(0, 6))
-    ttk.Button(actions, text="打开官网并自动填写", command=launch, style="Primary.TButton").pack(side="left", fill="x", expand=True, padx=(6, 0))
+    actions.pack(fill="x", pady=(2, 0))
+    actions.columnconfigure(0, weight=2, uniform="actions")
+    actions.columnconfigure(1, weight=3, uniform="actions")
+    ttk.Label(actions, text="本地资料", style="ActionHint.TLabel").grid(row=0, column=0, sticky="w", padx=(0, 8), pady=(0, 5))
+    ttk.Label(actions, text="税务登录", style="ActionHint.TLabel").grid(row=0, column=1, sticky="w", padx=(8, 0), pady=(0, 5))
+    ttk.Button(actions, text="保存当前公司资料", command=save_profile, style="Secondary.TButton").grid(row=1, column=0, sticky="ew", padx=(0, 8), ipady=2)
+    ttk.Button(actions, text="打开税务局并自动填写", command=launch, style="Primary.TButton").grid(row=1, column=1, sticky="ew", padx=(8, 0), ipady=2)
     ttk.Label(frame, textvariable=status_var, style="Status.TLabel").pack(fill="x", anchor="w", pady=(13, 0))
     ttk.Separator(frame).pack(fill="x", pady=(12, 8))
     ttk.Label(frame, text="使用日常浏览器打开、自动点击首页登录并填写三项资料；提交与验证由本人完成。", style="Hint.TLabel").pack(anchor="w")

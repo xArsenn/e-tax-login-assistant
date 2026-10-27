@@ -1,6 +1,6 @@
 {
-  "version": "1.1.0",
-  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.1.0/ETaxLoginAssistant.exe",
-  "sha256": "ca760adde5adda0cc61e190daebe85b9bb744c3f546d25fc2f67fc25e741beec",
-  "notes": "商业化视觉升级：深海军蓝、香槟金与暖白配色，强化品牌感和信息层级。"
+  "version": "1.2.0",
+  "url": "https://github.com/xArsenn/e-tax-login-assistant/releases/download/v1.2.0/ETaxLoginAssistant.exe",
+  "sha256": "feeaa472c84f5503dd7d112a89051c0ddee014d8576c5860036708d86630c8f7",
+  "notes": "重新优化操作按钮布局；连续打开不同税务局时复用同一浏览器窗口并新建标签页。"
 }
